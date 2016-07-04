@@ -21,6 +21,8 @@ import startView.StartViewImpl;
 public class ManagerUI extends UI
         implements VerificationListener, ChoiceListener {
 
+    // Testar att gitHub fungerar.
+
     private Navigator navigator;
 
     @WebServlet(value = "/*", asyncSupported = true)
