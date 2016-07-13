@@ -7,12 +7,17 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
 
+import commonComponents.LeftMenu;
 import loginView.LoginPresenter;
 import loginView.LoginViewImpl;
 import mainMenuView.MainMenuPresenter;
 import mainMenuView.MainMenuViewImpl;
+import playerView.PlayerPresenter;
+import playerView.PlayerViewImpl;
 import startView.StartPresenter;
 import startView.StartViewImpl;
 
@@ -21,28 +26,23 @@ import startView.StartViewImpl;
 public class ManagerUI extends UI
         implements VerificationListener, ChoiceListener {
 
-    // Testar att gitHub fungerar.
-
     private Navigator navigator;
 
     @WebServlet(value = "/*", asyncSupported = true)
-    @VaadinServletConfiguration(productionMode = false, ui = ManagerUI.class)
+    @VaadinServletConfiguration(productionMode = false, ui = ManagerUI.class, widgetset = "manager.widgetset.ManagerWidgetset")
     public static class Servlet extends VaadinServlet {
     }
 
     @Override
     protected void init(VaadinRequest request) {
 
-        navigator = new Navigator(this, this);
-
         LoginViewImpl loginViewImpl = new LoginViewImpl();
         LoginPresenter loginPresenter = new LoginPresenter(loginViewImpl);
 
         loginPresenter.addListener(this);
 
-        navigator.addView("login", loginViewImpl);
+        setContent(loginViewImpl);
 
-        navigator.navigateTo("login");
     }
 
     @Override
@@ -58,9 +58,8 @@ public class ManagerUI extends UI
 
         startPresenter.addListener(this);
 
-        navigator.addView("start", startViewImpl);
+        setContent(startViewImpl);
 
-        navigator.navigateTo("start");
     }
 
     @Override
@@ -71,12 +70,48 @@ public class ManagerUI extends UI
 
     private void buildMainMenu() {
 
+        HorizontalLayout rootLayout = new HorizontalLayout();
+        LeftMenu leftMenu = new LeftMenu();
+        CssLayout contentLayout = new CssLayout();
+        contentLayout.setSizeFull();
+
+        rootLayout.addComponents(leftMenu, contentLayout);
+
+        setContent(rootLayout);
+
+        navigator = new Navigator(this, contentLayout);
+
+        leftMenu.setNavigator(navigator);
+
         MainMenuViewImpl mainMenuViewImpl = new MainMenuViewImpl();
-        new MainMenuPresenter(mainMenuViewImpl, navigator);
+        new MainMenuPresenter(mainMenuViewImpl);
 
-        navigator.addView("mainMenu", mainMenuViewImpl);
+        navigator.addView("main", mainMenuViewImpl);
+        navigator.navigateTo("main");
 
-        navigator.navigateTo("mainMenu");
+        // Button temp = new Button("Temp");
+        // temp.addClickListener(new ClickListener() {
+        //
+        // @Override
+        // public void buttonClick(ClickEvent event) {
+        // navigator.navigateTo("player");
+        //
+        // }
+        //
+        // });
+        //
+        // rootLayout.addComponents(temp);
+
+        createMainViews();
+
+    }
+
+    private void createMainViews() {
+
+        PlayerViewImpl playerViewImpl = new PlayerViewImpl();
+        new PlayerPresenter(playerViewImpl);
+        navigator.addView("player", playerViewImpl);
+
     }
 
 }
