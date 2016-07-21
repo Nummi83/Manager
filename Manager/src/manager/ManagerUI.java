@@ -71,13 +71,16 @@ public class ManagerUI extends UI
     private void buildMainMenu() {
 
         HorizontalLayout rootLayout = new HorizontalLayout();
+
         LeftMenu leftMenu = new LeftMenu();
+
         CssLayout contentLayout = new CssLayout();
         contentLayout.setSizeFull();
 
         rootLayout.addComponents(leftMenu, contentLayout);
-
         setContent(rootLayout);
+        rootLayout.setExpandRatio(leftMenu, 1);
+        rootLayout.setExpandRatio(contentLayout, 4);
 
         navigator = new Navigator(this, contentLayout);
 
@@ -88,19 +91,6 @@ public class ManagerUI extends UI
 
         navigator.addView("main", mainMenuViewImpl);
         navigator.navigateTo("main");
-
-        // Button temp = new Button("Temp");
-        // temp.addClickListener(new ClickListener() {
-        //
-        // @Override
-        // public void buttonClick(ClickEvent event) {
-        // navigator.navigateTo("player");
-        //
-        // }
-        //
-        // });
-        //
-        // rootLayout.addComponents(temp);
 
         createMainViews();
 
